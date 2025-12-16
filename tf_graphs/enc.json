@@ -1,0 +1,29 @@
+{
+  "states": [
+    {
+      "name": "decompressed",
+      "granularity": "element"
+    },
+    {
+      "name": "encrytped",
+      "granularity": "region"
+    }
+  ],
+  "functions": [
+    {
+      "device": "CPU",
+      "input_state": "unencrypted",
+      "output_state": "encrypted",
+      "location": "builtin",
+      "name": "aes256_encrypt"
+    },
+    {
+      "device": "CPU",
+      "input_state": "encrypted",
+      "output_state": "unencrypted",
+      "location": "builtin",
+      "name": "aes256_unencrypt"
+    }
+  ],
+  "name": "aes256"
+}

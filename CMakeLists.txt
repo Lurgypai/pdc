@@ -23,36 +23,11 @@ foreach(p
 endforeach()
 
 # Dependencies directories
-# ZFP
-if(NOT DEFINED ENV{ZFP_ROOT_DIR} OR "$ENV{ZFP_ROOT_DIR}" STREQUAL "")
-    message(FATAL_ERROR "Environment variable ZFP_ROOT_DIR is not set")
-endif()
-set(ZFP_ROOT $ENV{ZFP_ROOT_DIR})
 # JSON-C
 if(NOT DEFINED ENV{JSONC_ROOT_DIR} OR "$ENV{JSONC_ROOT_DIR}" STREQUAL "")
     message(FATAL_ERROR "Environment variable JSONC_ROOT_DIR is not set")
 endif()
 set(JSONC_ROOT $ENV{JSONC_ROOT_DIR})
-# libsodium
-if(NOT DEFINED ENV{LIBSODIUM_ROOT_DIR} OR "$ENV{LIBSODIUM_ROOT_DIR}" STREQUAL "")
-    message(FATAL_ERROR "Environment variable LIBSODIUM_ROOT_DIR is not set")
-endif()
-set(LIBSODIUM_ROOT $ENV{LIBSODIUM_ROOT_DIR})
-if(DEFINED ENV{CUDA_ROOT_DIR} AND NOT "$ENV{CUDA_ROOT_DIR}" STREQUAL "")
-  set(CUDA_ROOT $ENV{CUDA_ROOT_DIR})
-endif()
-
-# ZFP
-find_path(ZFP_INCLUDE_DIR NAMES zfp.h PATHS "${ZFP_ROOT}/include")
-find_library(ZFP_LIBRARY NAMES zfp PATHS "${ZFP_ROOT}/lib64" "${ZFP_ROOT}/lib")
-if(NOT ZFP_INCLUDE_DIR)
-  message(FATAL_ERROR "Could not find ZFP headers in ${ZFP_ROOT}/include")
-endif()
-if(NOT ZFP_LIBRARY)
-  message(FATAL_ERROR "Could not find ZFP library in ${ZFP_ROOT}/lib64 or ${ZFP_ROOT}/lib")
-endif()
-include_directories(${ZFP_INCLUDE_DIR})
-link_libraries(${ZFP_LIBRARY})
 
 # JSONC
 find_path(JSONC_INCLUDE_DIR NAMES json-c/json.h PATHS "${JSONC_ROOT}/include")
@@ -66,83 +41,7 @@ endif()
 include_directories(${JSONC_INCLUDE_DIR})
 link_libraries(${JSONC_LIBRARY})
 
-# LIBSODIUM
-find_path(LIBSODIUM_INCLUDE_DIR NAMES sodium.h PATHS "${LIBSODIUM_ROOT}/include")
-find_library(LIBSODIUM_LIBRARY NAMES sodium PATHS "${LIBSODIUM_ROOT}/lib")
-if(NOT LIBSODIUM_INCLUDE_DIR)
-  message(FATAL_ERROR "Could not find libsodium headers in ${LIBSODIUM_ROOT}/include")
-endif()
-if(NOT LIBSODIUM_LIBRARY)
-  message(FATAL_ERROR "Could not find libsodium library in ${LIBSODIUM_ROOT}/lib")
-endif()
-include_directories(${LIBSODIUM_INCLUDE_DIR})
-link_libraries(${LIBSODIUM_LIBRARY})
-
-# CUDA 
-if(CUDA_ROOT)
-  # Find include directory
-  find_path(CUDA_INCLUDE_DIR NAMES cuda_runtime.h PATHS "${CUDA_ROOT}/include")
-  # Find runtime library
-  find_library(CUDA_RUNTIME_LIBRARY NAMES cudart PATHS "${CUDA_ROOT}/lib64" "${CUDA_ROOT}/lib")
-  if(NOT CUDA_INCLUDE_DIR)
-      message(FATAL_ERROR "Could not find CUDA headers in ${CUDA_ROOT}/include")
-  endif()
-  if(NOT CUDA_RUNTIME_LIBRARY)
-      message(FATAL_ERROR "Could not find CUDA runtime library in ${CUDA_ROOT}/lib64 or ${CUDA_ROOT}/lib")
-  endif()
-  include_directories(${CUDA_INCLUDE_DIR})
-  link_libraries(${CUDA_RUNTIME_LIBRARY})
-  set(CUDA_ENABLED 1 CACHE BOOL "Enable CUDA globally")
-  if(CUDA_ENABLED)
-    add_compile_definitions(CUDA_ENABLED=1)
-    add_definitions(-DUSE_CUDA)
-  endif()
-endif()
-
-if(NOT DEFINED SZ_CPU_DIR)
-  set(SZ_CPU_DIR $ENV{SZ_CPU_DIR})
-endif()
-message(STATUS "SZ_CPU_DIR = ${SZ_CPU_DIR}")
-# SZ3
-find_path(SZ3_INCLUDE_DIR NAMES sz3c.h PATHS "${SZ_CPU_DIR}/include/SZ3c")
-find_library(SZ3_LIBRARY NAMES SZ3c PATHS "${SZ_CPU_DIR}/lib64" "${SZ_CPU_DIR}/lib")
-if(NOT SZ3_INCLUDE_DIR)
-  message(FATAL_ERROR "Could not find SZ3 headers in ${SZ_CPU_DIR}/include")
-endif()
-if(NOT SZ3_LIBRARY)
-  message(FATAL_ERROR "Could not find SZ3 library in ${SZ_CPU_DIR}/lib64 or ${SZ_CPU_DIR}/lib")
-endif()
-include_directories(${SZ3_INCLUDE_DIR})
-link_libraries(${SZ3_LIBRARY})
-# Check if CUSZ_GPU_DIR is defined; if not, take from environment
-if(NOT DEFINED CUSZ_GPU_DIR)
-  set(CUSZ_GPU_DIR $ENV{CUSZ_GPU_DIR})
-endif()
-# GPU CUSZ
-if(NOT DEFINED CUSZ_GPU_DIR)
-  set(CUSZ_GPU_DIR $ENV{CUSZ_GPU_DIR})
-endif()
-message(STATUS "CUSZ_GPU_DIR = ${CUSZ_GPU_DIR}")
-# Find CUSZ headers (not SZ3)
-find_path(CUSZ_INCLUDE_DIR
-  NAMES cusz.h context.h api_v2.h header.h
-  PATHS "${CUSZ_GPU_DIR}/include/cusz"
-)
-if(NOT CUSZ_INCLUDE_DIR)
-  message(FATAL_ERROR "Could not find CUSZ headers in ${CUSZ_GPU_DIR}/include/cusz")
-endif()
-include_directories(${CUSZ_INCLUDE_DIR})
-find_library(CUSZ_LIBRARY
-  NAMES cusz
-  PATHS
-    "${CUSZ_GPU_DIR}/lib"
-    "${CUSZ_GPU_DIR}/lib64"
-)
-if(NOT CUSZ_LIBRARY)
-  message(FATAL_ERROR "Could not find CUSZ library in ${CUSZ_GPU_DIR}/lib or lib64")
-endif()
-message(STATUS "CUSZ_LIBRARY = ${CUSZ_LIBRARY}")
-link_libraries(${CUSZ_LIBRARY})
+add_subdirectory(src/server/encryption_wrapper)
 
 # Set a consistent MACOSX_RPATH default across all CMake versions.
 # checks if the variable CMAKE_MACOSX_RPATH is not defined and sets it to 0 if it is not defined.

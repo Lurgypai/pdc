@@ -131,6 +131,9 @@ target_link_libraries(${PDC_COMMON_LIBRARY_NAME} INTERFACE
   ${PDC_EXT_LIB_DEPENDENCIES}
 )
 
+# TEMP TESTING
+target_link_libraries(${PDC_COMMON_LIBRARY_NAME} INTERFACE enc_wrapper)
+
 set(PDC_EXPORTED_LIBS ${PDC_COMMON_LIBRARY_NAME} ${PDC_EXPORTED_LIBS})
 
 #------------------------------------------------------------------------------

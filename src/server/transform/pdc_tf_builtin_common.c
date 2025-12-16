@@ -26,6 +26,7 @@ typedef struct sz_compress_params_t {
     pdc_tf_region_t decompressed_region;
 } sz_compress_params_t;
 
+#ifdef ENABLE_TF_ZFP_COMPRESSION
 static void
 print_ztype(zfp_type z_type)
 {
@@ -48,8 +49,8 @@ print_ztype(zfp_type z_type)
             break;
     }
 }
+#endif
 
-#define ENABLE_TF_SZ_GPU_COMPRESSSION
 #ifdef ENABLE_TF_SZ_GPU_COMPRESSSION
 #include <stdbool.h>
 #include <stdint.h>
@@ -870,7 +871,7 @@ pdc_tf_builtin_zfp_decompress_cuda(pdc_tf_internal_param internal_param, char *p
                                                      output_region);
 }
 #endif // CUDA_ENABLED
-#endif // ENABLE_TF_ZFP_COMPRESSION
+#endif // ENABLE_ZFP_COMPRESSION
 
 #ifdef ENABLE_SECRET_BOX_ENCRYPTION
 
@@ -970,3 +971,99 @@ pdc_tf_builtin_decrypt(pdc_tf_internal_param internal_param, char *params_str, v
     return true;
 }
 #endif // ENABLE_SECRET_BOX_ENCRYPTION
+
+#ifdef ENABLE_AES256_ENCRYPTION
+#include "../encryption_wrapper/enc_wrapper.h"
+#include "../encryption_wrapper/gcrypt_impl/enc_gcrypt.h"
+
+// FIXME: should be picked up by params_str
+// unsigned char key[crypto_secretbox_KEYBYTES]     = {0};
+// unsigned char nonce[crypto_secretbox_NONCEBYTES] = {0};
+
+typedef struct encrypt_params_t {
+    char key[256];
+} encrypt_params_t;
+
+bool
+pdc_tf_builtin_aes256_encrypt(pdc_tf_internal_param internal_param, char *params_str, void **region_data,
+                       pdc_tf_region_t input_region, pdc_tf_region_t *output_region)
+{
+    LOG_DEBUG("pdc_tf_builtin_aes256_encrypt called\n");
+    LOG_DEBUG("Input region (encrypt aes256):\n");
+    PDCtf_log_pdc_region_t(input_region);
+
+    // load encryption
+    enc_load_library(enc_get_gcrypt());
+    enc_prepare(aes256);
+    size_t nonce_size = enc_get_nonce_size();
+    char* nonce = enc_make_nonce();
+    enc_set_nonce(nonce, nonce_size);
+    size_t key_size = enc_get_key_size();
+    char* key = enc_make_key();
+    enc_set_key(key, key_size);
+
+    // allocate out buffer
+    size_t plaintext_len = PDCtf_get_pdc_region_t_bytes(input_region);
+
+    size_t         ciphertext_len = plaintext_len + nonce_size;
+    unsigned char *ciphertext     = malloc(ciphertext_len);
+    if (!ciphertext) {
+        LOG_ERROR("Failed to allocate ciphertext buffer\n");
+        return false;
+    }
+
+    enc_encrypt(*region_data, plaintext_len, ciphertext + nonce_size, plaintext_len);
+
+    // Output region is 1D bytes (ciphertext)
+    output_region->ndim         = 1;
+    output_region->pdc_var_type = PDC_CHAR;
+    output_region->size[0]      = ciphertext_len;
+
+    // Save key VERY BAD FIX LATER
+    encrypt_params_t *out_params = malloc(sizeof(encrypt_params_t));
+    memcpy(out_params->key, key, key_size);
+    SET_FUNC_PARAMS("aes256_encrypt", PDC_TF_CPU_DEVICE, out_params, sizeof(out_params));
+
+    // Update data pointer
+    *region_data = ciphertext;
+
+    LOG_DEBUG("Encryption succeeded, ciphertext length: %zu bytes\n", ciphertext_len);
+    return true;
+}
+
+bool
+pdc_tf_builtin_aes256_decrypt(pdc_tf_internal_param internal_param, char *params_str, void **region_data,
+                       pdc_tf_region_t input_region, pdc_tf_region_t *output_region)
+{
+    LOG_DEBUG("pdc_tf_builtin_aes256_decrypt called\n");
+    /*
+    LOG_DEBUG("Input region (decrypt):\n");
+    PDCtf_log_pdc_region_t(input_region);
+
+    size_t ciphertext_len = PDCtf_get_pdc_region_t_bytes(input_region);
+    // size_t plaintext_len = 
+
+    unsigned char *plaintext = malloc(plaintext_len);
+    if (!plaintext) {
+        LOG_ERROR("Failed to allocate plaintext buffer\n");
+        return false;
+    }
+
+    if (crypto_secretbox_open_easy(plaintext, (unsigned char *)*region_data, ciphertext_len, nonce, key) !=
+        0) {
+        LOG_ERROR("Decryption failed or ciphertext tampered\n");
+        free(plaintext);
+        return false;
+    }
+
+    // Set output region dims: restore original plaintext region
+    PDCtf_copy_tf_region_t(&in_params->decompressed_region, output_region);
+
+    // Update data pointer
+    *region_data = plaintext;
+
+    LOG_DEBUG("Decryption succeeded, plaintext length: %zu bytes\n", plaintext_len);
+    */
+    return true;
+}
+#endif // ENABLE_GENERIC_ENCRYPTION

@@ -74,6 +74,10 @@ add_library(pdc_server_lib
                ${PDC_SOURCE_DIR}/src/utils/pdc_region_utils.c
                ${PDC_SOURCE_DIR}/src/api/pdc_hist/pdc_hist_pkg.c
 )
+
+# ============== TEMP ENCRYPTION WRAPPER LINK ==============
+target_link_libraries(pdc_server_lib enc_wrapper)
+
 if(PDC_ENABLE_FASTBIT)
     message(STATUS "Enabled fastbit")
     target_link_libraries(pdc_server_lib ${MERCURY_LIBRARY} ${PDC_COMMONS_LIBRARIES} -lm -ldl ${PDC_EXT_LIB_DEPENDENCIES} ${FASTBIT_LIBRARY}/libfastbit.so)

@@ -332,6 +332,7 @@ PDCtf_init_builtin_funcs()
         PGOTO_ERROR(FAIL, "Failed to add builtin func zfp_compress CPU");
     if (PDCtf_add_builtin_func("zfp_decompress", pdc_tf_builtin_zfp_decompress, PDC_TF_CPU_DEVICE) != SUCCEED)
         PGOTO_ERROR(FAIL, "Failed to add builtin func zfp_decompress CPU");
+#endif // ENABLE_TF_ZFP_COMPREESSION
 #ifdef CUDA_ENABLED
     if (PDCtf_add_builtin_func("zfp_compress", pdc_tf_builtin_zfp_compress_cuda, PDC_TF_GPU_DEVICE) !=
         SUCCEED)
@@ -340,13 +341,18 @@ PDCtf_init_builtin_funcs()
         SUCCEED)
         PGOTO_ERROR(FAIL, "Failed to add builtin func zfp_decompress GPU");
 #endif // CUDA_ENABLED
-#endif // ENABLE_TF_ZFP_COMPRESSION
 #ifdef ENABLE_SECRET_BOX_ENCRYPTION
     if (PDCtf_add_builtin_func("secret_box_encrypt", pdc_tf_builtin_encrypt, PDC_TF_CPU_DEVICE) != SUCCEED)
         PGOTO_ERROR(FAIL, "Failed to add builtin func secret_box_encrypt CPU");
     if (PDCtf_add_builtin_func("secret_box_decrypt", pdc_tf_builtin_decrypt, PDC_TF_CPU_DEVICE) != SUCCEED)
         PGOTO_ERROR(FAIL, "Failed to add builtin func secret_box_decrypt CPU");
 #endif // ENABLE_SECRET_BOX_ENCRYPTION
+#ifdef ENABLE_AES256_ENCRYPTION
+    if (PDCtf_add_builtin_func("aes256_encrypt", pdc_tf_builtin_aes256_encrypt, PDC_TF_CPU_DEVICE) != SUCCEED)
+        PGOTO_ERROR(FAIL, "Failed to add builtin func aes256_encrypt CPU");
+    if (PDCtf_add_builtin_func("aes256_decrypt", pdc_tf_builtin_aes256_decrypt, PDC_TF_CPU_DEVICE) != SUCCEED)
+        PGOTO_ERROR(FAIL, "Failed to add builtin func aes256_decrypt CPU");
+#endif // ENABLE_AES256_ENCRYPTION
 
 done:
     FUNC_LEAVE(ret_value);

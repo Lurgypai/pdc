@@ -190,6 +190,10 @@ main(int argc, char **argv)
                 pdcid_t dg_id = PDCtf_dg_json_create(TF_GRAPHS_DIR "sz.json");
                 PDCtf_attach_to_obj(dg_id, obj_ids[i], "decompressed", "compressed");
             }
+            else if (!strcmp(transformation_str, "enc")) {
+                pdcid_t dg_id = PDCtf_dg_json_create(TF_GRAPHS_DIR "enc.json");
+                PDCtf_attach_to_obj(dg_id, obj_ids[i], "unencrypted", "encrypted");
+            }
             else if (strcmp(transformation_str, "raw")) {
                 print_usage();
                 abort();
