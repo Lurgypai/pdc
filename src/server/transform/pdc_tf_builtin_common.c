@@ -986,7 +986,7 @@ typedef struct encrypt_params_t {
 
 bool
 pdc_tf_builtin_aes256_encrypt(pdc_tf_internal_param internal_param, char *params_str, void **region_data,
-                       pdc_tf_region_t input_region, pdc_tf_region_t *output_region)
+                              pdc_tf_region_t input_region, pdc_tf_region_t *output_region)
 {
     LOG_DEBUG("pdc_tf_builtin_aes256_encrypt called\n");
     LOG_DEBUG("Input region (encrypt aes256):\n");
@@ -996,10 +996,10 @@ pdc_tf_builtin_aes256_encrypt(pdc_tf_internal_param internal_param, char *params
     enc_load_library(enc_get_gcrypt());
     enc_prepare(aes256);
     size_t nonce_size = enc_get_nonce_size();
-    char* nonce = enc_make_nonce();
+    char * nonce      = enc_make_nonce();
     enc_set_nonce(nonce, nonce_size);
     size_t key_size = enc_get_key_size();
-    char* key = enc_make_key();
+    char * key      = enc_make_key();
     enc_set_key(key, key_size);
 
     // allocate out buffer
@@ -1033,7 +1033,7 @@ pdc_tf_builtin_aes256_encrypt(pdc_tf_internal_param internal_param, char *params
 
 bool
 pdc_tf_builtin_aes256_decrypt(pdc_tf_internal_param internal_param, char *params_str, void **region_data,
-                       pdc_tf_region_t input_region, pdc_tf_region_t *output_region)
+                              pdc_tf_region_t input_region, pdc_tf_region_t *output_region)
 {
     LOG_DEBUG("pdc_tf_builtin_aes256_decrypt called\n");
     /*
@@ -1041,7 +1041,7 @@ pdc_tf_builtin_aes256_decrypt(pdc_tf_internal_param internal_param, char *params
     PDCtf_log_pdc_region_t(input_region);
 
     size_t ciphertext_len = PDCtf_get_pdc_region_t_bytes(input_region);
-    // size_t plaintext_len = 
+    // size_t plaintext_len =
 
     unsigned char *plaintext = malloc(plaintext_len);
     if (!plaintext) {

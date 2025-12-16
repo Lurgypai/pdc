@@ -57,8 +57,8 @@ bool pdc_tf_builtin_decrypt(pdc_tf_internal_param internal_param, char *params_s
 
 #ifdef ENABLE_AES256_ENCRYPTION
 bool pdc_tf_builtin_aes256_encrypt(pdc_tf_internal_param internal_param, char *params_str, void **region_data,
-                            pdc_tf_region_t input_region, pdc_tf_region_t *output_region);
+                                   pdc_tf_region_t input_region, pdc_tf_region_t *output_region);
 bool pdc_tf_builtin_aes256_decrypt(pdc_tf_internal_param internal_param, char *params_str, void **region_data,
-                            pdc_tf_region_t input_region, pdc_tf_region_t *output_region);
+                                   pdc_tf_region_t input_region, pdc_tf_region_t *output_region);
 #endif
 #endif
