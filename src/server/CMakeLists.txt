@@ -76,6 +76,7 @@ add_library(pdc_server_lib
                transform/pdc_tf_builtin_sz_cpu.c
                transform/pdc_tf_builtin_sz_gpu.c
                transform/pdc_tf_builtin_encrypt_cpu.c
+               transform/pdc_tf_builtin_ew_encrypt_cpu.c
                transform/pdc_tf_builtin_turbo_cpu.c
                transform/pdc_tf_profiler.c
                analysis/pdc_an_common.c

@@ -92,6 +92,7 @@ set(PDC_SRCS
   ${PDC_SOURCE_DIR}/src/server/transform/pdc_tf_builtin_sz_cpu.c
   ${PDC_SOURCE_DIR}/src/server/transform/pdc_tf_builtin_sz_gpu.c
   ${PDC_SOURCE_DIR}/src/server/transform/pdc_tf_builtin_encrypt_cpu.c
+  ${PDC_SOURCE_DIR}/src/server/transform/pdc_tf_builtin_ew_encrypt_cpu.c
   ${PDC_SOURCE_DIR}/src/server/transform/pdc_tf_builtin_turbo_cpu.c
   ${PDC_SOURCE_DIR}/src/server/transform/pdc_tf_profiler.c
   ${PDC_SOURCE_DIR}/src/server/analysis/pdc_an_common.c

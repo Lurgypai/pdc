@@ -221,6 +221,12 @@ PDCtf_init_builtin_funcs()
     if (PDCtf_add_builtin_func("secret_box_decrypt", pdc_tf_builtin_decrypt, PDC_TF_CPU_DEVICE) != SUCCEED)
         PGOTO_ERROR(FAIL, "Failed to add builtin func secret_box_decrypt CPU");
 #endif
+#ifdef ENABLE_TF_ENCRYPTION
+    if (PDCtf_add_builtin_func("ew_encrypt", pdc_tf_builtin_ew_encrypt, PDC_TF_CPU_DEVICE) != SUCCEED)
+        PGOTO_ERROR(FAIL, "Failed to add builtin func ew_encrypt CPU");
+    if (PDCtf_add_builtin_func("ew_decrypt", pdc_tf_builtin_ew_decrypt, PDC_TF_CPU_DEVICE) != SUCCEED)
+        PGOTO_ERROR(FAIL, "Failed to add builtin func ew_decrypt CPU");
+#endif
 #ifdef ENABLE_TF_TURBO_COMPRESSION
     if (PDCtf_add_builtin_func("turbo_compress", pdc_tf_builtin_turbo_compress, PDC_TF_CPU_DEVICE) != SUCCEED)
         PGOTO_ERROR(FAIL, "Failed to add builtin func turbo_compress CPU");
