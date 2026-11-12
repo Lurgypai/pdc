@@ -81,8 +81,8 @@ endif()
 
 # ENCWRAPPER -- pdc_tf_builtin_ew_encrypt_cpu.c only
 if(ENCWRAPPER_ROOT)
-  find_path(ENCWRAPPER_INCLUDE_DIR NAMES sodium.h PATHS "${ENCWRAPPER_ROOT}/include")
-  find_library(ENCWRAPPER_LIBRARY NAMES sodium PATHS "${ENCWRAPPER_ROOT}/lib")
+  find_path(ENCWRAPPER_INCLUDE_DIR NAMES enc_wrapper.h PATHS "${ENCWRAPPER_ROOT}/include")
+  find_library(ENCWRAPPER_LIBRARY NAMES enc_wrapper PATHS "${ENCWRAPPER_ROOT}/lib")
   if(NOT ENCWRAPPER_INCLUDE_DIR)
     message(FATAL_ERROR "ENCWRAPPER_ROOT_DIR is set but could not find enc_wrapper headers in ${ENCWRAPPER_ROOT}/include")
   endif()
@@ -94,7 +94,7 @@ if(ENCWRAPPER_ROOT)
   set(ENCWRAPPER_ENABLED 1)
   add_compile_definitions(ENCWRAPPER_ENABLED=1)
 else()
-  message(STATUS "ENCWRAPPER_ROOT_DIR not set -- secret_box_encrypt/decrypt transformation disabled")
+  message(STATUS "ENCWRAPPER_ROOT_DIR not set -- encrypt/decrypt transformation disabled")
 endif()
 
 # CUDA 

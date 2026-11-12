@@ -7,19 +7,24 @@
 #include "pdc_logger.h"
 
 #ifdef ENABLE_TF_ENCRYPTION
-#include <sodium.h>
-
-unsigned char key[crypto_secretbox_KEYBYTES]     = {0};
-unsigned char nonce[crypto_secretbox_NONCEBYTES] = {0};
+// #include <sodium.h>
+#include <enc_wrapper.h>
 
 typedef struct encrypt_params_t {
     pdc_tf_region_t unencrypted_region;
 } encrypt_params_t;
 
 bool
-pdc_tf_builtin_encrypt(pdc_tf_internal_param *internal_param, char *params_str, void **region_data,
+pdc_tf_builtin_ew_encrypt(pdc_tf_internal_param *internal_param, char *params_str, void **region_data,
                        pdc_tf_region_t input_region, pdc_tf_region_t *output_region)
 {
+    enc_config conf = {
+        .alg = aes256,
+        .lib = enc_lib_gcrypt
+    };
+
+    enc_load_config(conf);
+    /*
     LOG_DEBUG("pdc_tf_builtin_encrypt called\n");
     PDCtf_log_pdc_region_t(input_region);
 
@@ -47,13 +52,15 @@ pdc_tf_builtin_encrypt(pdc_tf_internal_param *internal_param, char *params_str, 
 
     *region_data = ciphertext;
     LOG_DEBUG("Encryption succeeded, ciphertext length: %zu bytes\n", ciphertext_len);
+    */
     return true;
 }
 
 bool
-pdc_tf_builtin_decrypt(pdc_tf_internal_param *internal_param, char *params_str, void **region_data,
+pdc_tf_builtin_ew_decrypt(pdc_tf_internal_param *internal_param, char *params_str, void **region_data,
                        pdc_tf_region_t input_region, pdc_tf_region_t *output_region)
 {
+    /*
     LOG_DEBUG("pdc_tf_builtin_decrypt called\n");
     PDCtf_log_pdc_region_t(input_region);
 
@@ -89,6 +96,7 @@ pdc_tf_builtin_decrypt(pdc_tf_internal_param *internal_param, char *params_str, 
     *region_data = plaintext;
 
     LOG_DEBUG("Decryption succeeded, plaintext length: %zu bytes\n", plaintext_len);
+    */
     return true;
 }
 
