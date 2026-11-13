@@ -1,0 +1,27 @@
+{
+  "states": [
+    {
+      "name": "unencrypted"
+    },
+    {
+      "name": "encrypted"
+    }
+  ],
+  "functions": [
+    {
+      "device": "CPU",
+      "input_state": "unencrypted",
+      "output_state": "encrypted",
+      "location": "builtin",
+      "name": "ew_encrypt"
+    },
+    {
+      "device": "CPU",
+      "input_state": "encrypted",
+      "output_state": "unencrypted",
+      "location": "builtin",
+      "name": "ew_decrypt"
+    }
+  ],
+  "name": "ew_enc"
+}

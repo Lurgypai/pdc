@@ -114,6 +114,7 @@ set(PROGRAMS
   transformation/compression_encryption_transform_2D
   transformation/compression_encryption_transform_3D
   transformation/all_compression_transform
+  transformation/encryption_transform
 
   analysis/vector_magnitude_test
   analysis/vector_magnitude_2d_test
@@ -420,6 +421,12 @@ if(CUDA_ENABLED)
   set_tests_properties(cuda_smoke_test vector_magnitude_gpu_test PROPERTIES LABELS "analysis;analysis_gpu")
 else()
   list(APPEND PDC_TF_SKIPPED_TESTS cuda_smoke_test vector_magnitude_gpu_test)
+endif()
+
+if(ENCWRAPPER_ENABLED)
+  add_test(NAME encryption_transform WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} COMMAND run_test.sh ./encryption_transform)
+else()
+  list(APPEND PDC_TF_SKIPPED_TESTS encryption_transform)
 endif()
 
 if(PDC_TF_SKIPPED_TESTS)
